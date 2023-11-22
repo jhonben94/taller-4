@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
  // Ejemplo de método que utiliza el HttpClient
  getDatos(): Observable<any> {
-    return this.http.get<any>(`localhost:4000/api/admin`);
+    return this.http.get<any>(`localhost:4000/hello`);
   }
     ngOnInit() {
         this.getDatos().subscribe({

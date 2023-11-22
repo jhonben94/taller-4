@@ -9,7 +9,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Obtener el token de Keycloak
-    const token = null; //this.keycloak.getToken();
+    let token =  this.keycloak.getToken()['__zone_symbol__value']; //fdthis.keycloak.getToken();
+  //  console.log(token['__zone_symbol__value'])
 
     // Clonar la solicitud y agregar el token en la cabecera
     if (token) {

@@ -14,6 +14,7 @@ import { PhotoService } from './demo/service/photo.service';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './utils/auth.interceptor';
+import { AuthGuard } from './utils/auth.guard';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { AuthInterceptor } from './utils/auth.interceptor';
         AppLayoutModule
     ],
     providers: [
+        AuthGuard,
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService,
