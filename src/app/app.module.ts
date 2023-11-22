@@ -11,20 +11,58 @@ import { EventService } from './demo/service/event.service';
 import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './utils/auth.interceptor';
 
 @NgModule({
     declarations: [
         AppComponent, NotfoundComponent
     ],
     imports: [
+        KeycloakAngularModule,
         AppRoutingModule,
         AppLayoutModule
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService
+        PhotoService, ProductService,
+        {
+            provide: KeycloakService,
+            useValue: new KeycloakService(),
+          },
+
+          {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+          },
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+
+    constructor(private readonly keycloak: KeycloakService) {
+        this.initKeycloak();
+      }
+    
+      private initKeycloak(): void {
+        const config = {
+          url: 'http://localhost:8080',
+          realm: 'quarkus',
+          clientId: 'backend-service',
+        };
+    
+        this.keycloak.init({
+          config,
+          initOptions: {
+            onLoad: 'login-required',
+            checkLoginIframe: false,
+          },
+          enableBearerInterceptor: true,
+        });
+      }
+}
+
+
