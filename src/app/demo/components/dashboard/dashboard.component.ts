@@ -1,3 +1,4 @@
+import { EstudianteService } from '../../service/estudiante.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Product } from '../../api/product';
@@ -5,6 +6,7 @@ import { ProductService } from '../../service/product.service';
 import { Subscription, Observable } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { HttpClient } from '@angular/common/http';
+import { CursosService } from '../../service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -22,26 +24,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     subscription!: Subscription;
 
     constructor(private productService: ProductService, public layoutService: LayoutService,
-        private readonly http: HttpClient) {
+        private readonly http: HttpClient,
+        private service: CursosService
+        ) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
         });
     }
  // Ejemplo de método que utiliza el HttpClient
- getDatos(): Observable<any> {
-    return this.http.get<any>(`localhost:4000/hello`);
-  }
+
     ngOnInit() {
-        this.getDatos().subscribe({
-            next: (data)=>{
-                console.log(data);
-            },
-            error: (data)=>{
-                console.log(data);
-                
-            },
-        })
-        
+            this.service.obtenerPorDocente(1,2).subscribe({
+                next:(data)=>{
+                    console.log(data)
+                },
+                error:(data)=>{
+                    console.log(data)
+
+                }
+            })
         this.initChart();
         this.productService.getProductsSmall().then(data => this.products = data);
 
